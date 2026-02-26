@@ -1,14 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { SignIn } from '@/components/SignIn'
+import Header from '@/components/Header'
+import { Focus } from '@/components/Focus'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
-  
-
   return (
-    <div className="h-[80vh]">
-        <SignIn/>
+    <div className="">
+      <Header />
+      <Focus />
     </div>
   )
 }
