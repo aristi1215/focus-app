@@ -1,8 +1,13 @@
 import Play from '/icons/Play.svg?url'
 import { useState, useEffect } from 'react'
+import { CompletedPopUp } from './popUp/CompletedPopUp'
+import { FocusQuestion } from './popUp/FocusQuestion'
+import { TypeWorkQuestion } from './popUp/TypeWorkQuestion'
+import { NotesQuestion } from './popUp/NotesQuestion'
 
 export const Focus = () => {
   const [sessionActive, setSessionActive] = useState(false)
+  const [stepPopUp, setStepPopup] = useState(0)
   // Total amount of time that has passed.
   const [seconds, setSeconds] = useState(0)
 
@@ -41,12 +46,20 @@ export const Focus = () => {
       </div>
 
       <div className="h-full flex flex-col justify-center items-center">
-        <h2>Session in progress</h2>
+        <h2 className="text-3xl font-semibold">Session in progress</h2>
         <p>Stay focused, you're doing a great job</p>
         <h1 className="text-4xl text-black font-bold">
           {format(hours)}:{format(minutes)}:{format(secs)}
         </h1>
+        <button className="border border-black rounded-lg hover:bg-black hover:text-white transition-all duration-150">
+          End session
+        </button>
       </div>
+      <CompletedPopUp>
+        <FocusQuestion />
+        <TypeWorkQuestion />
+        <NotesQuestion />
+      </CompletedPopUp>
     </div>
   )
 }
