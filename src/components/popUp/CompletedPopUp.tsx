@@ -34,14 +34,14 @@ export const CompletedPopUp = ({
               <h3 className="font-semibold text-xl">Session Complete!🎉</h3>
               <div className="flex gap-3">
                 {[...Array(totalSteps)].map((_,i) => (
-                  <div className={`w-8 h-1.5 rounded-2xl mt-8 ${step==i ? "bg-black" : "bg-[#E5E5E5]"}`}></div>
+                  <div className={`w-8 h-1.5 rounded-2xl mt-6 ${step==i ? "bg-black" : "bg-[#E5E5E5]"}`}></div>
                 ))}
               </div>
             </header>
 
             <div className="w-full overflow-hidden">
               <div
-                className="flex transition-transform duration-300 ease-in-out mt-6"
+                className="flex transition-transform duration-300 ease-in-out"
                 style={{ transform: `translateX(-${step * 100}%)` }}
               >
                 {children.map((child, index) => (
