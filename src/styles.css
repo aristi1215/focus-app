@@ -5,7 +5,9 @@
 @theme {
   --font-inter: "Inter", sans-serif;
   --color-title-black: #171717;
+  --color-subtitle-gray: "#737373"
 }
+
 
 @layer components {
 

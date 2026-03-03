@@ -1,22 +1,20 @@
+import { FaRegCircleCheck,FaRegCircleXmark } from "react-icons/fa6";
+
 
 export const FlowStateQuestion = () => {
   return (
-      <div>
-        <h4>¿Did you reach a flow state?</h4>
-        <p>Feeling completely inmersed and energized</p>
-        <div className="flex gap-3 ">
-          <button className="w-16 h-16 border border-black flex flex-col justify-center items-center">
-            <img src="" alt="" />
+      <div className="text-center flex flex-col justify-start gap-6 items-center h-full font-inter">
+        <h4 className="font-bold">¿Did you reach a flow state?</h4>
+        <p className="text-subtitle-gray">Feeling completely <br /> inmersed and energized</p>
+        <div className="flex gap-3 w-full">
+          <button className="w-full hover:bg-black hover:text-white transition-all duration-300 cursor-pointer h-25 rounded-xl border-[#D4D4D4] border flex flex-col justify-center items-center">
+            <FaRegCircleXmark size={30}/>
+            <p>No</p>
+          </button>
+          <button className="w-full hover:bg-black hover:text-white transition-all duration-300 cursor-pointer h-25 rounded-xl border-[#D4D4D4] border flex flex-col justify-center items-center">
+            <FaRegCircleCheck size={30} />
             <p>Yes</p>
           </button>
-          <button className="w-16 h-16 border border-black flex flex-col justify-center items-center">
-            <img src="" alt="" />
-            <p>no</p>
-          </button>
-        </div>
-        <div className="flex ">
-          <button className="w-full">back</button>
-          <button className="w-full">Next</button>
         </div>
       </div>
   )
