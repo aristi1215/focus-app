@@ -1,28 +1,27 @@
 export const Analytics = () => {
+  const keyInsights = [
+    { name: 'Best Focus Time', data: '18.8' },
+    { name: 'Best Location', data: 'Office' },
+    { name: 'Average rating', data: '4.0' },
+    { name: 'Total sessions', data: '81' },
+  ]
   return (
-    <div>
-      <h2>Analytics</h2>
-      <p>Deep insights into your cognitive performance</p>
+    <div className="p-6 font-inter">
+      <h2 className="text-2xl">Analytics</h2>
+      <p className="text-main-gray text-lg">
+        Deep insights into your cognitive performance
+      </p>
 
-      <div id="key-insights">
+      <div id="key-insights" className="border border-[#E5E5E5] rounded-xl p-3">
         <h3>Key insights</h3>
-        <div className="flex justify-evenly">
-          <div>
-            <h4></h4>
-            <b></b>
-          </div>
-          <div>
-            <h4></h4>
-            <b></b>
-          </div>
-          <div>
-            <h4></h4>
-            <b></b>
-          </div>
-          <div>
-            <h4></h4>
-            <b></b>
-          </div>
+        <div className="flex justify-start gap-60">
+          {keyInsights.map((insight) => (
+            <div>
+              <h4>{insight.name}</h4>
+              <b>{insight.data}</b>
+            </div>
+          ))}
+
         </div>
       </div>
 
@@ -39,7 +38,6 @@ export const Analytics = () => {
       </div>
 
       <div>
-
         <div>
           <h3>Location Performance</h3>
           {/* mapeo de locations */}
@@ -54,20 +52,18 @@ export const Analytics = () => {
         </div>
 
         <div>
-            <h3>Top Focus Day</h3>
-            <div>
-                <p>1</p>
-                <p>feb 13</p>
-                <p>7.1</p>
-            </div>
+          <h3>Top Focus Day</h3>
+          <div>
+            <p>1</p>
+            <p>feb 13</p>
+            <p>7.1</p>
+          </div>
         </div>
-
       </div>
 
       <div>
         <h3>Performance by Week Type</h3>
       </div>
-
     </div>
   )
 }
