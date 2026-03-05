@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSessionContext } from '@/context/SessionContext'
 
 export const CompletedPopUp = ({
   children,
@@ -11,9 +12,20 @@ export const CompletedPopUp = ({
 }) => {
   const [step, setStep] = useState(0)
   const totalSteps = children.length
+  const [_, setSessionInfo] = useSessionContext()
   const finishSession = () => {
     setPopUp(false)
     setStep(0)
+    setSessionInfo({
+    sessionId: '',
+    startTime: '',
+    endTime: '',
+    duration: 0,
+    flowStateReached: false,
+    focusLevel: 1,
+    typeOfWork: 'Coding',
+    additionalNotes: '',
+  })
   }
 
   const isFirst = step === 0

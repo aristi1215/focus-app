@@ -32,7 +32,7 @@ export default function Header({
               }}
             />
             <button
-              className={`flex-1 p-2 rounded-lg transition-colors z-10 ${
+              className={`flex-1 p-2 rounded-lg transition-colors z-10 cursor-pointer ${
                 tab === 'focus' ? 'text-white' : ''
               }`}
               onClick={() => setTab('focus')}
@@ -40,7 +40,7 @@ export default function Header({
               Focus
             </button>
             <button
-              className={`flex-1 p-2 rounded-lg transition-colors z-10 ${
+              className={`flex-1 p-2 rounded-lg transition-colors z-10 cursor-pointer ${
                 tab === 'analytics' ? 'text-white' : ''
               }`}
               onClick={() => setTab('analytics')}
@@ -48,7 +48,7 @@ export default function Header({
               Analytics
             </button>
             <button
-              className={`flex-1 p-2 rounded-lg transition-colors z-10 ${
+              className={`flex-1 p-2 rounded-lg transition-colors z-10 cursor-pointer ${
                 tab === 'insights' ? 'text-white' : ''
               }`}
               onClick={() => setTab('insights')}

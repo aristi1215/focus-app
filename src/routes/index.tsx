@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Analytics } from '@/components/Analytics'
 import { Insights } from '@/components/Insights'
 import type { Tabs } from '@/types/tabs'
+import { SessionContextProvider } from '@/context/SessionContext'
 
 export const Route = createFileRoute('/')({ component: App })
 
@@ -14,9 +15,10 @@ function App() {
   return (
     <div className="">
       <Header tab={currentTab} setTab={setCurrentTab} />
-      {/* render all tabs but hide non‑active ones to avoid unmounting overhead */}
       <div hidden={currentTab !== 'focus'}>
-        <Focus />
+        <SessionContextProvider>
+          <Focus />
+        </SessionContextProvider>
       </div>
       <div hidden={currentTab !== 'analytics'}>
         <Analytics />

@@ -1,4 +1,8 @@
+import { useSessionContext } from "@/context/SessionContext"
+
 export const FocusQuestion = () => {
+  const [sessionInfo, setSessionInfo] = useSessionContext()
+
   return (
     <div  className="flex flex-col h-full text-center gap-10">
       <div>
@@ -7,7 +11,7 @@ export const FocusQuestion = () => {
       </div>
       <div className="flex justify-evenly">
         {[...Array(5)].map((_, i) => (
-          <button className="text-black rounded-full border border-[#737373]/50 hover:bg-black hover:text-white transition-all duration-300 cursor-pointer w-10 h-10 p-8 flex items-center justify-center">
+          <button onClick={() => setSessionInfo({...sessionInfo, focusLevel: i + 1})} className={`text-black rounded-full border border-[#737373]/50 hover:bg-black hover:text-white transition-all duration-300 cursor-pointer w-10 h-10 p-8 flex items-center justify-center ${sessionInfo.focusLevel === i + 1 ? "bg-black text-white" : ""}`}>
             <p className="text-2xl ">{i+1}</p>
           </button>
         ))}
