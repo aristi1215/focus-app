@@ -5,34 +5,16 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
 } from 'recharts'
 
-export const AreaChart = () => {
-  const data = [
-    { date: '2026-02-15', score: 45 },
-    { date: '2026-02-16', score: 52 },
-    { date: '2026-02-17', score: 48 },
-    { date: '2026-02-18', score: 61 },
-    { date: '2026-02-19', score: 58 },
-    { date: '2026-02-20', score: 72 },
-    { date: '2026-02-21', score: 68 },
-    { date: '2026-02-22', score: 85 },
-    { date: '2026-02-23', score: 79 },
-    { date: '2026-02-24', score: 88 },
-    { date: '2026-03-01', score: 82 },
-    { date: '2026-03-02', score: 90 },
-    { date: '2026-03-03', score: 87 },
-    { date: '2026-03-04', score: 92 },
-  ]
+export const AreaChart = ({data}: {data: any}) => {
 
   return (
     <LineChart
       style={{
         width: '100%',
-        maxWidth: '700px',
         height: '100%',
-        maxHeight: '70vh',
+        maxHeight: '20rem',
         aspectRatio: 1.618,
       }}
       responsive
@@ -45,8 +27,8 @@ export const AreaChart = () => {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-3)" />
-      <XAxis dataKey="date" stroke="var(--color-text-3)" />
-      <YAxis width="auto" stroke="var(--color-text-3)" />
+      <XAxis dataKey={Object.keys(data[0])[0]} stroke="black" />
+      <YAxis width="auto" stroke="black" />
       <Tooltip
         cursor={{
           stroke: 'var(--color-border-2)',
@@ -56,16 +38,13 @@ export const AreaChart = () => {
           borderColor: 'var(--color-border-2)',
         }}
       />
-      <Legend />
       <Line
         type="monotone"
-        dataKey="score"
-        stroke="var(--color-chart-1)"
+        dataKey={Object.keys(data[0])[1]}
+        stroke="black"
         dot={{
-          fill: 'var(--color-surface-base)',
+          fill: 'black',
         }}
-        activeDot={{ r: 8, stroke: 'var(--color-surface-base)' }}
-        name="Focus Score"
       />
     </LineChart>
   )
