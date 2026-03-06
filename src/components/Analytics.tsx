@@ -152,7 +152,7 @@ export const Analytics = () => {
         <div className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full">
           <h3 className="mb-6 text-lg font-semibold">Location Performance</h3>
           {locations.map((location) => (
-            <div className="mb-6">
+            <div className="mb-6" key={location.name}>
               <div className="w-full flex justify-between">
                 <h4 className="font-semibold text-lg mb-3">{location.name}</h4>
                 <p className="text-gray-600">{location.score}%</p>

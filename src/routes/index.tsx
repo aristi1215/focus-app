@@ -13,19 +13,21 @@ function App() {
   const [currentTab, setCurrentTab] = useState<Tabs>('focus')
 
   return (
-    <div className="">
+    <div className="min-h-screen flex flex-col">
       <Header tab={currentTab} setTab={setCurrentTab} />
-      <div hidden={currentTab !== 'focus'}>
-        <SessionContextProvider>
-          <Focus />
-        </SessionContextProvider>
-      </div>
-      <div hidden={currentTab !== 'analytics'}>
-        <Analytics />
-      </div>
-      <div hidden={currentTab !== 'insights'}>
-        <Insights />
-      </div>
+      <main className="flex-1 overflow-auto md:overflow-visible pb-20 md:pb-0">
+        <div hidden={currentTab !== 'focus'} className="h-full">
+          <SessionContextProvider>
+            <Focus />
+          </SessionContextProvider>
+        </div>
+        <div hidden={currentTab !== 'analytics'} className="h-full">
+          <Analytics />
+        </div>
+        <div hidden={currentTab !== 'insights'} className="h-full">
+          <Insights />
+        </div>
+      </main>
     </div>
   )
 }

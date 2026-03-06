@@ -58,7 +58,7 @@ export const Focus = () => {
   const format = (num: number) => String(num).padStart(2, '0')
 
   return (
-    <div className="h-[90vh] flex flex-col items-center justify-center gap-10 font-inter ">
+    <div className="min-h-[75vh] flex flex-col items-center justify-center gap-10 font-inter mt-8 md:mt-0 md:min-h-[90vh]">
       {sessionActive ? (
         <article className="h-full flex flex-col justify-around items-center py-20">
           <header>
@@ -96,23 +96,22 @@ export const Focus = () => {
           </footer>
         </article>
       ) : (
-        <div className="h-full flex flex-col justify-center items-center gap-6">
-          <h2 className="text-4xl font-semibold">Ready to focus?</h2>
-          <p>One click to start tracking</p>
-          <button className="bg-black cursor-pointer h-60 w-60 rounded-full flex flex-col items-center justify-center shadow-2xl">
-            <img
-              onClick={startSession}
-              src={Play}
-              alt="Start timer icon"
-              className="w-20 h-20"
-            />
-            <h3 className="text-white text-2xl">Start</h3>
+        <div className="h-full flex flex-col justify-center items-center md:gap-6">
+          <h2 className="text-[24px] font-semibold md:text-4xl">
+            Ready to focus?
+          </h2>
+          <p className="text-[16px] text-gray-500 mb-6 md:mb-0">One click to start tracking</p>
+          <button
+            onClick={startSession}
+            className="bg-black cursor-pointer h-30 w-30 rounded-full flex flex-col items-center justify-center shadow-2xl md:h-60 md:w-60"
+          >
+            <img src={Play} alt="Start timer icon" className="w-10 h-10 md:w-20 md:h-20" />
+            <h3 className="text-lg text-white md:text-2xl">Start</h3>
           </button>
-          <div className="border border-gray-400 rounded-xl max-w-[45%] p-3 mt-10">
-            <p>
+          <div className="border border-gray-400 rounded-xl max-w-[90%] p-2 mt-10 md:p-3 md:max-w-[45%]">
+            <p className="text-sm">
               <b>How it works:</b> Click start when you begin focused work.
-              We'll automatically track your session and detect focus levels.
-              After you finish, answer a few quick questions to help improve
+              We'll automatically track your session.After you finish, answer a few quick questions to help improve
               your insights.
             </p>
           </div>
