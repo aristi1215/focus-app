@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from 'recharts'
 
-export const AreaChart = ({data}: {data: any}) => {
+export const AreaChart = ({data, angle}: {data: {}[], angle?: number}) => {
 
   return (
     <LineChart
@@ -27,7 +27,14 @@ export const AreaChart = ({data}: {data: any}) => {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-3)" />
-      <XAxis dataKey={Object.keys(data[0])[0]} stroke="black" />
+      <XAxis 
+        dataKey={Object.keys(data[0])[0]} 
+        stroke="black"
+        fontSize={10}
+        angle={angle}
+        textAnchor="end"
+        height={30}
+      />
       <YAxis width="auto" stroke="black" />
       <Tooltip
         cursor={{

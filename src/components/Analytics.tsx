@@ -1,5 +1,6 @@
 import { BarChartComponent } from './charts/BarChart'
 import { AreaChart } from './charts/AreaChart'
+import { ResponsiveContainer } from 'recharts'
 
 export const Analytics = () => {
   const keyInsights = [
@@ -105,56 +106,59 @@ export const Analytics = () => {
   ]
 
   return (
-    <div className="p-6 font-inter mx-30">
-
-      <div className='mb-8'>
-        <h2 className="text-2xl font-semibold mb-2">Analytics</h2>
-        <p className="text-gray-500 text-lg">
+    <div className=" font-inter p-6 md:p-6 md:mx-30">
+      <div className="mb-2 md:mb-8">
+        <h2 className="text-xl md:text-2xl font-semibold mb-1">Analytics</h2>
+        <p className="text-sm mb-4 text-gray-500 md:text-lg">
           Deep insights into your cognitive performance
         </p>
       </div>
 
       <div
         id="key-insights"
-        className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm"
+        className="border border-[#E5E5E5] p-3 rounded-xl md:p-6 shadow-sm"
       >
-        <h3 className=" text-lg font-semibold mb-3">Key insights</h3>
-        <div className="flex justify-start gap-60">
+        <h3 className="font-semibold mb-3">Key insights</h3>
+        <div className="grid grid-cols-2 grid-rows-2 md:grid md:grid-cols-4 md:grid-rows-1 gap-5">
           {keyInsights.map((insight) => (
             <div key={insight.name}>
-              <h4 className="text-main-gray">{insight.name}</h4>
-              <b>{insight.data}</b>
+              <h4 className="text-[#525252] text-[12px] md:text-sm">
+                {insight.name}
+              </h4>
+              <p className="font-semibold text-[14px] md:text-lg">
+                {insight.data}
+              </p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="w-full border border-[#E5E5E5] rounded-xl p-6 shadow-sm mt-10">
-        <h3 className="mb-10 text-lg font-semibold">
+      <div className="w-full border border-[#E5E5E5] rounded-xl shadow-sm mt-5 p-3 md:p-6 md:mt-10">
+        <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">
           Concentration Changes Over Time
         </h3>
-        <AreaChart data={data} />
+        <AreaChart data={data} angle={-45} />
       </div>
 
       <div className="w-full border border-[#E5E5E5] rounded-xl p-6 shadow-sm mt-10">
-        <h3 className="mb-10 text-lg font-semibold">30 Days Growth Curve</h3>
+        <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">30 Days Growth Curve</h3>
         <AreaChart data={growthCurve} />
       </div>
 
       <div className="w-full border border-[#E5E5E5] rounded-xl p-6 shadow-sm mt-10">
-        <h3 className="mb-10 text-lg font-semibold">
+        <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">
           Focus Window by Hour of Day
         </h3>
         <BarChartComponent data={FocusWindowByHour} />
       </div>
 
-      <div className="flex justify-center w-full gap-8 mt-8">
-        <div className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full">
-          <h3 className="mb-6 text-lg font-semibold">Location Performance</h3>
+      <div className="md:flex md:justify-center w-full md:gap-8 mt-8">
+        <div className="mb-8 md:mb-8 border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full">
+          <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">Location Performance</h3>
           {locations.map((location) => (
             <div className="mb-6" key={location.name}>
               <div className="w-full flex justify-between">
-                <h4 className="font-semibold text-lg mb-3">{location.name}</h4>
+                <h4 className="mb-4 md:text-lg font-semibold">{location.name}</h4>
                 <p className="text-gray-600">{location.score}%</p>
               </div>
               <div
@@ -166,7 +170,7 @@ export const Analytics = () => {
                   style={{ width: `${location.score}%` }}
                 ></div>
               </div>
-              <p className="mt-3 text-gray-600">{location.hours} hours total</p>
+              <p className="text-sm mt-3 text-gray-600">{location.hours} hours total</p>
             </div>
           ))}
         </div>
@@ -191,7 +195,7 @@ export const Analytics = () => {
       </div>
 
       <div className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full mt-8">
-        <h3 className="mb-6 text-lg font-semibold">Performance by Week Type</h3>
+        <h3 className="mb-6 text-lg font-semibold">Performance by Work Type</h3>
         <BarChartComponent data={performanceByWorkType} />
       </div>
     </div>

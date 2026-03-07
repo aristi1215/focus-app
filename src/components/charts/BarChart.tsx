@@ -1,12 +1,25 @@
-import { BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Bar } from 'recharts';
+import { BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Bar } from 'recharts'
 
-
-export const BarChartComponent = ({ data }: {data: any[]}) => (
-  <BarChart style={{ width: '100%', maxHeight: '30rem', aspectRatio: 1.618 }} responsive data={data}>
+export const BarChartComponent = ({
+  data,
+  angle,
+}: {
+  data: { [key: string]: string | number }[]
+  angle?: number
+}) => (
+  <BarChart
+    style={{ width: '100%', maxHeight: '30rem', aspectRatio: 1.618 }}
+    responsive
+    data={data}
+  >
     <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey={Object.keys(data[0])[0]} />
-    <YAxis width="auto" stroke='black' />
+    <XAxis angle={angle} dataKey={Object.keys(data[0])[0]} />
+    <YAxis width="auto" stroke="black" />
     <Tooltip />
-    <Bar dataKey={Object.keys(data[0])[1]} fill="black" isAnimationActive={true} />
+    <Bar
+      dataKey={Object.keys(data[0])[1]}
+      fill="black"
+      isAnimationActive={true}
+    />
   </BarChart>
-);
+)
