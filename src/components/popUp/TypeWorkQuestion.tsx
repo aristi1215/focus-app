@@ -8,7 +8,7 @@ export const TypeWorkQuestion = () => {
     'Deep Work',
     'Creative Work',
     'Writing',
-    'Learning/Study',
+    'Study',
     'Coding',
     'Planning',
     'Meeting',
@@ -24,7 +24,7 @@ export const TypeWorkQuestion = () => {
       <div className="grid grid-cols-3 gap-3 ">
         {categories.map((categorie) => (
           <button
-            className={`p-4 border border-[#737373]/50 hover:bg-black hover:text-white transition-all duration-300 cursor-pointer text-sm rounded-xl ${sessionInfo.typeOfWork === categorie ? "bg-black text-white" : ""}`}
+            className={`p-4 border border-[#737373]/50 hover:bg-black hover:text-white transition-all duration-300 cursor-pointer text-xs sm:text-sm rounded-xl ${sessionInfo.typeOfWork === categorie ? "bg-black text-white" : ""}`}
             onClick={() =>
               setSessionInfo({ ...sessionInfo, typeOfWork: categorie })
             }

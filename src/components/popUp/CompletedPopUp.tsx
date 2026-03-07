@@ -40,12 +40,12 @@ export const CompletedPopUp = ({
           ></div>
 
           <div
-            className={`rounded-xl min-h-79 max-w-md border border-black absolute bg-white text-black flex flex-col items-center justify-center gap-3 overflow-hidden z-20 p-6`}
+            className={`rounded-xl min-h-79 max-w-[90%] md:max-w-md border border-black absolute bg-white text-black flex flex-col items-center justify-center gap-3 overflow-hidden z-20 p-6`}
           >
             <header className="flex flex-col w-full items-center justify-center">
               <h3 className="font-semibold text-xl">Session Complete!🎉</h3>
               <div className="flex gap-3">
-                {[...Array(totalSteps)].map((_,i) => (
+                {[...Array(totalSteps)].map((__,i) => (
                   <div className={`w-8 h-1.5 rounded-2xl mt-6 ${step==i ? "bg-black" : "bg-[#E5E5E5]"}`}></div>
                 ))}
               </div>

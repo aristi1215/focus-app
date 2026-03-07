@@ -18,13 +18,9 @@ export const Insights = () => {
         ...chatBotMessages,
         { sender: 'user', text: message },
       ])
-      setUserMessage('') // Limpiar input
+      setUserMessage('')
     }
   }
-  // useEffect(() => {
-  //   console.log(chatBotMessages)
-  // }, [chatBotMessages])
-
   return (
     <div className="px-6 md:px-30 ">
       <h2 className="mt-4 text-lg md:mt-8 font-semibold md:text-2xl text-center">

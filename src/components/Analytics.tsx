@@ -176,7 +176,7 @@ export const Analytics = () => {
         </div>
 
         <div className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full">
-          <h3 className="mb-6 text-lg font-semibold">Top Focus Day</h3>
+          <h3 className="text-[15px] mb-6 md:text-lg font-semibold">Top Focus Day</h3>
           {topFocusDays.map((day, i) => (
             <div
               className="w-full flex items-center justify-between mb-3"
@@ -186,16 +186,16 @@ export const Analytics = () => {
                 <div className="bg-gray-200 rounded-full p-4 w-10 h-10 flex items-center justify-center mr-4">
                   <p className="font-semibold ">{i + 1}</p>
                 </div>
-                <p className="text-lg">{day.date}</p>
+                <p className="text-sm md:text-lg">{day.date}</p>
               </div>
-              <p className="font-semibold text-lg">{day.score} h</p>
+              <p className="font-semibold text-sm md:text-lg">{day.score} h</p>
             </div>
           ))}
         </div>
       </div>
 
       <div className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full mt-8">
-        <h3 className="mb-6 text-lg font-semibold">Performance by Work Type</h3>
+        <h3 className="mb-6 text-sm md:text-lg font-semibold">Performance by Work Type</h3>
         <BarChartComponent data={performanceByWorkType} />
       </div>
     </div>

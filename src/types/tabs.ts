@@ -3,7 +3,7 @@ export type WorkCategories =
   | 'Deep Work'
   | 'Creative Work'
   | 'Writing'
-  | 'Learning/Study'
+  | 'Study'
   | 'Coding'
   | 'Planning'
   | 'Meeting'
