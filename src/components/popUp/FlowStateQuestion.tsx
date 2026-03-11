@@ -15,7 +15,7 @@ export const FlowStateQuestion = () => {
           onClick={() =>
             setSessionInfo({ ...sessionInfo, flowStateReached: false })
           }
-          className={`w-full hover:bg-black hover:text-white transition-all duration-300 cursor-pointer h-25 rounded-xl border-[#D4D4D4] border flex flex-col justify-center items-center ${!sessionInfo.flowStateReached ? "bg-black text-white" : ""} `}
+          className={`w-full hover:bg-black hover:text-white transition-all duration-300 cursor-pointer h-20 sm:h-25 rounded-xl border-[#D4D4D4] border flex flex-col justify-center items-center ${!sessionInfo.flowStateReached ? "bg-black text-white" : ""} `}
         >
           <FaRegCircleXmark size={30} />
           <p>No</p>
@@ -24,7 +24,7 @@ export const FlowStateQuestion = () => {
           onClick={() =>
             setSessionInfo({ ...sessionInfo, flowStateReached: true })
           }
-          className={`w-full hover:bg-black hover:text-white transition-all duration-300 cursor-pointer h-25 rounded-xl border-[#D4D4D4] border flex flex-col justify-center items-center ${sessionInfo.flowStateReached ? "bg-black text-white" : ""} `}
+          className={`w-full hover:bg-black hover:text-white transition-all duration-300 cursor-pointer h-20 sm:h-25 rounded-xl border-[#D4D4D4] border flex flex-col justify-center items-center ${sessionInfo.flowStateReached ? "bg-black text-white" : ""} `}
         >
           <FaRegCircleCheck size={30} />
           <p>Yes</p>
