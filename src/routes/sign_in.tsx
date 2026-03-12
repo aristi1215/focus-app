@@ -6,5 +6,7 @@ export const Route = createFileRoute('/sign_in')({
 })
 
 function RouteComponent() {
-  return <SignIn/>
+  return (
+      <SignIn />
+  )
 }

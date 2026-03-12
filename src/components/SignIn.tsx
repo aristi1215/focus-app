@@ -1,6 +1,45 @@
+import { useEffect, useState } from 'react'
 import Brain from '/icons/Brain.svg?url'
+import { useAuthContext } from '@/context/AuthContext'
+import { useRouter } from '@tanstack/react-router'
 
-export const SignIn = () => {
+//  isUserRegistered is made to change the logic from sign up to sign in
+export const SignIn = ({isUserRegistered}: {isUserRegistered: boolean}) => {
+  const { signInWithEmail, signUpNewUser, session } = useAuthContext()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string>('')
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    if(session) {
+      router.navigate({ to: '/' })
+    }else{
+      console.log("there's no session active")
+    }
+  },[])
+
+  const handleSignUp = async (e: any) => {
+    e.preventDefault()
+    setLoading(true)
+    let result
+    if(isUserRegistered){
+      result = await signInWithEmail(email, password)
+    }else {
+      result = await signUpNewUser(email, password)
+    }
+    setLoading(false)
+
+    if (!loading && result.success) {
+      setError('')
+      // Redirect to the base URL after successful sign up
+      router.navigate({ to: '/' })
+    } else {
+      setError(result.error || 'An unexpected error occurred')
+    }
+  }
+
   return (
     <div className="flex flex-col justify-around items-center h-full font-inter gap-10">
       <div className="text-center mt-20">
@@ -13,24 +52,32 @@ export const SignIn = () => {
         </p>
       </div>
 
-      <form className="flex flex-col shadow-xl border border-[#E5E5E5] rounded-xl p-6 w-[90%] md:w-md gap-10">
+      <form
+        onSubmit={(e) => {
+          handleSignUp(e)
+        }}
+        className="flex flex-col shadow-xl border border-[#E5E5E5] rounded-xl p-6 w-[90%] md:w-md gap-10"
+      >
         <h3 className="font-semibold text-xl md:text-2xl">Welcome </h3>
-        <div className='flex flex-col gap-3'>
+        <div className="flex flex-col gap-3">
           <label htmlFor="email">Email Address</label>
           <input
+            onChange={(e) => setEmail(e.target.value)}
             className="p-3 bg-[#F3F3F5] rounded-xl"
             type="email"
             placeholder="user@gmail.com"
           />
           <label htmlFor="email">Password</label>
           <input
+            onChange={(e) => setPassword(e.target.value)}
             className="p-3 bg-[#F3F3F5] rounded-xl"
             type="password"
             placeholder="************"
           />
+          <p className="text-red-500 font-semibold ">{error}</p>
         </div>
 
-        <button className="bg-black text-white p-3 rounded-xl">
+        <button disabled={loading} className="bg-black text-white p-3 rounded-xl">
           Get started -{'>'}
         </button>
       </form>

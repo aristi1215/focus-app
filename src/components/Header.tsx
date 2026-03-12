@@ -1,6 +1,9 @@
 import { FaBrain } from 'react-icons/fa'
 import { MdBarChart, MdLightbulb, MdLogout } from 'react-icons/md'
 import type { Tabs } from '@/types/tabs'
+import { useAuthContext } from '@/context/AuthContext'
+import { useState } from 'react'
+import {useRouter} from '@tanstack/react-router'
 
 export default function Header({
   tab,
@@ -9,6 +12,22 @@ export default function Header({
   tab: Tabs
   setTab: (tab: Tabs) => void
 }) {
+
+  const [loading, setLoading] = useState (false)
+  const { signOut } = useAuthContext()
+  const router = useRouter()
+
+
+
+  const handleLogOut = async () => {
+    setLoading(true)
+    const result = await signOut()
+    setLoading(false)
+    if(!loading && result.success){
+      router.navigate({to: '/sign_in'})
+    }
+  }
+
   return (
     <>
       {/* Desktop Header */}
@@ -57,7 +76,7 @@ export default function Header({
               Insights
             </button>
           </div>
-          <button className="p-2 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-lg transition-colors">
+          <button onClick={handleLogOut} className="p-2 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-lg transition-colors">
             <MdLogout className="text-xl" />
           </button>
         </div>
@@ -72,7 +91,7 @@ export default function Header({
               FocusFlow
             </h1>
           </div>
-          <button className="p-2 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-lg transition-colors">
+          <button onClick={handleLogOut} className="p-2 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-lg transition-colors">
             <MdLogout className="text-xl" />
           </button>
         </div>
