@@ -4,7 +4,7 @@ import { useAuthContext } from '@/context/AuthContext'
 import { useRouter } from '@tanstack/react-router'
 
 //  isUserRegistered is made to change the logic from sign up to sign in
-export const SignIn = ({isUserRegistered}: {isUserRegistered: boolean}) => {
+export const Auth = ({isUserRegistered}: {isUserRegistered: boolean}) => {
   const { signInWithEmail, signUpNewUser, session } = useAuthContext()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -20,18 +20,17 @@ export const SignIn = ({isUserRegistered}: {isUserRegistered: boolean}) => {
     }
   },[])
 
-  const handleSignUp = async (e: any) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
-    let result
-    if(isUserRegistered){
-      result = await signInWithEmail(email, password)
-    }else {
-      result = await signUpNewUser(email, password)
-    }
+    
+    const result = await (isUserRegistered 
+      ? signInWithEmail(email, password)
+      : signUpNewUser(email, password))
+    
     setLoading(false)
 
-    if (!loading && result.success) {
+    if (result.success) {
       setError('')
       // Redirect to the base URL after successful sign up
       router.navigate({ to: '/' })
@@ -77,8 +76,8 @@ export const SignIn = ({isUserRegistered}: {isUserRegistered: boolean}) => {
           <p className="text-red-500 font-semibold ">{error}</p>
         </div>
 
-        <button disabled={loading} className="bg-black text-white p-3 rounded-xl">
-          Get started -{'>'}
+        <button disabled={loading} className="bg-black text-white p-3 rounded-xl cursor-pointer">
+          {isUserRegistered ? "Log in" : "Get started"}
         </button>
       </form>
     </div>

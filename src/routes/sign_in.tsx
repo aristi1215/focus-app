@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { SignIn } from '@/components/SignIn'
+import { Auth } from '@/components/Auth'
 
 export const Route = createFileRoute('/sign_in')({
   component: RouteComponent,
@@ -7,6 +7,6 @@ export const Route = createFileRoute('/sign_in')({
 
 function RouteComponent() {
   return (
-      <SignIn />
+      <Auth isUserRegistered={true} />
   )
 }
