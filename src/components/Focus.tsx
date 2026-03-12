@@ -6,28 +6,33 @@ import { TypeWorkQuestion } from './popUp/TypeWorkQuestion'
 import { NotesQuestion } from './popUp/NotesQuestion'
 import { FlowStateQuestion } from './popUp/FlowStateQuestion'
 import { useSessionContext } from '@/context/SessionContext'
+import { LocationQuestion } from './popUp/LocationsQuestion'
+import { useAuthContext } from '@/context/AuthContext'
 
 export const Focus = () => {
   const [sessionActive, setSessionActive] = useState(false)
   const [popUpActive, setPopUpActive] = useState(false)
   const [startDate, setStartDate] = useState('')
-  const [sessionInfo, setSessionInfo] = useSessionContext()
+  const { session, setSession } = useSessionContext()
+  const { user } = useAuthContext()
+
+  const userId = user?.id
 
   const finishSession = () => {
     setPopUpActive(true)
     setSessionActive(false)
-    setSessionInfo({
-      ...sessionInfo,
-      endTime: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      }),
+    setSession({
+      ...session,
+      end_date: new Date().toISOString(),
       duration: seconds,
     })
     setSeconds(0)
   }
   const startSession = () => {
+    if (!userId) {
+      console.log('User not authenticated')
+      return
+    }
     const currDate = new Date().toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
@@ -35,7 +40,12 @@ export const Focus = () => {
     })
     setSessionActive(true)
     setStartDate(currDate)
-    setSessionInfo({ ...sessionInfo, startTime: currDate })
+    setSession({
+      ...session,
+      start_date: new Date().toISOString(),
+      date: new Date().toLocaleDateString(),
+      user_id: userId,
+    })
   }
 
   // Total amount of time that has passed.
@@ -100,19 +110,25 @@ export const Focus = () => {
           <h2 className="text-[24px] font-semibold md:text-4xl">
             Ready to focus?
           </h2>
-          <p className="text-[16px] text-gray-500 mb-6 md:mb-0">One click to start tracking</p>
+          <p className="text-[16px] text-gray-500 mb-6 md:mb-0">
+            One click to start tracking
+          </p>
           <button
             onClick={startSession}
             className="bg-black cursor-pointer h-30 w-30 rounded-full flex flex-col items-center justify-center shadow-2xl md:h-60 md:w-60 hover:scale-115 hover:shadow-blue-300 transition-all duration-300"
           >
-            <img src={Play} alt="Start timer icon" className="w-10 h-10 md:w-20 md:h-20 " />
+            <img
+              src={Play}
+              alt="Start timer icon"
+              className="w-10 h-10 md:w-20 md:h-20 "
+            />
             <h3 className="text-lg text-white md:text-2xl">Start</h3>
           </button>
           <div className="border border-gray-400 rounded-xl max-w-[90%] p-2 mt-10 md:p-3 md:max-w-[45%]">
             <p className="text-sm">
               <b>How it works:</b> Click start when you begin focused work.
-              We'll automatically track your session. After you finish, answer a few quick questions to help improve
-              your insights.
+              We'll automatically track your session. After you finish, answer a
+              few quick questions to help improve your insights.
             </p>
           </div>
         </div>
@@ -122,6 +138,7 @@ export const Focus = () => {
         <FlowStateQuestion />
         <FocusQuestion />
         <TypeWorkQuestion />
+        <LocationQuestion />
         <NotesQuestion />
       </CompletedPopUp>
     </div>

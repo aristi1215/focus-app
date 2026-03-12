@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSessionContext } from '@/context/SessionContext'
+import { useCreateFocusSession } from '../../hooks/useCreateFocusSession'
 
 export const CompletedPopUp = ({
   children,
@@ -12,20 +13,31 @@ export const CompletedPopUp = ({
 }) => {
   const [step, setStep] = useState(0)
   const totalSteps = children.length
-  const [_, setSessionInfo] = useSessionContext()
-  const finishSession = () => {
+  const { session, setSession } = useSessionContext()
+  const { createSession, loading } = useCreateFocusSession()
+
+  const finishSession = async () => {
+    const result = await createSession(session)
+
+    if(!result.success){
+      console.log(`An error has ocurred while sending the session: ${result.error}`)
+    }
+    console.log(result.data)
+
     setPopUp(false)
     setStep(0)
-    setSessionInfo({
-    sessionId: '',
-    startTime: '',
-    endTime: '',
-    duration: 0,
-    flowStateReached: false,
-    focusLevel: 1,
-    typeOfWork: 'Coding',
-    additionalNotes: '',
-  })
+    setSession({
+      date: '',
+      start_date: '',
+      end_date: '',
+      duration: 0,
+      flow_reached: false,
+      focus_level: 1,
+      work_type: 1,
+      notes: '',
+      locations: 0,
+      user_id: '',
+    })
   }
 
   const isFirst = step === 0
@@ -45,8 +57,10 @@ export const CompletedPopUp = ({
             <header className="flex flex-col w-full items-center justify-center">
               <h3 className="font-semibold text-xl">Session Complete!🎉</h3>
               <div className="flex gap-3">
-                {[...Array(totalSteps)].map((__,i) => (
-                  <div className={`w-8 h-1.5 rounded-2xl mt-6 ${step==i ? "bg-black" : "bg-[#E5E5E5]"}`}></div>
+                {[...Array(totalSteps)].map((__, i) => (
+                  <div
+                    className={`w-8 h-1.5 rounded-2xl mt-6 ${step == i ? 'bg-black' : 'bg-[#E5E5E5]'}`}
+                  ></div>
                 ))}
               </div>
             </header>
@@ -66,14 +80,18 @@ export const CompletedPopUp = ({
 
             <footer className="w-full flex justify-between">
               {!isFirst && (
-                <button onClick={() => setStep(step - 1)} className="w-full cursor-pointer">
+                <button
+                  onClick={() => setStep(step - 1)}
+                  className="w-full cursor-pointer"
+                >
                   Back
                 </button>
               )}
 
               <button
+                disabled={loading}
                 onClick={isLast ? finishSession : () => setStep(step + 1)}
-                className={`w-full text-white rounded-xl h-9 cursor-pointer  ${isFirst ? "bg-[#8B8B8B]" : "bg-black"}`}
+                className={`w-full text-white rounded-xl h-9 cursor-pointer  ${isFirst ? 'bg-[#8B8B8B]' : 'bg-black'}`}
               >
                 {isLast ? 'Finish' : 'Next'}
               </button>

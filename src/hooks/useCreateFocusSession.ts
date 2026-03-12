@@ -1,14 +1,22 @@
+import { useState } from 'react'
 import { supabase } from '@/supabase/client'
+import type { TablesInsert } from 'database.types'
 
-export const createFocusSession = async () => {
-  const { data, error } = await supabase.from('focus_sessions').insert({
-    /* session data */
-  })
+export const useCreateFocusSession = () => {
+  const [loading, setLoading] = useState(false)
 
-  if (error) {
-    console.error('Error creating focus session:', error)
-    return { success: false, error: error.message }
+  const createSession = async (session: TablesInsert<'focus_sessions'>) => {
+    setLoading(true)
+    const { data, error } = await supabase
+      .from('focus_sessions')
+      .insert(session)
+    setLoading(false)
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    return { success: true, data }
   }
-  console.log('Focus session created:', data)
-  return { success: true, data }
+
+  return { createSession, loading }
 }

@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import type { SessionInfo } from '../types/tabs'
+import type { TablesInsert } from 'database.types'
 
-export const SessionContext = createContext<
-  [SessionInfo, React.Dispatch<React.SetStateAction<SessionInfo>>] | undefined
->(undefined)
+type ContextType = {
+  session: TablesInsert<'focus_sessions'>
+  setSession: React.Dispatch<React.SetStateAction<TablesInsert<'focus_sessions'>>>
+}
+
+export const SessionContext = createContext<ContextType | undefined>(undefined)
 
 export const useSessionContext = () => {
   const session = useContext(SessionContext)
@@ -18,22 +21,24 @@ export const SessionContextProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const [session, setSession] = useState<SessionInfo>({
-    sessionId: '',
-    startTime: '',
-    endTime: '',
+  const [session, setSession] = useState<TablesInsert<'focus_sessions'>>({
+    date: '',
+    start_date: '',
+    end_date: '',
     duration: 0,
-    flowStateReached: false,
-    focusLevel: 1,
-    typeOfWork: 'Coding',
-    additionalNotes: '',
+    flow_reached: false,
+    focus_level: 1,
+    work_type: 1,
+    notes: '',
+    locations: 1,
+    user_id: ''
   })
   useEffect(() => {
     console.log('Session context updated:', session)
   }, [session])
 
   return (
-    <SessionContext.Provider value={[session, setSession]}>
+    <SessionContext.Provider value={{ session, setSession }}>
       {children}
     </SessionContext.Provider>
   )
