@@ -1,102 +1,203 @@
-import { supabase } from "@/supabase/client"
-import { useEffect, useState } from "react"
-import { useAuthContext } from "@/context/AuthContext"
-import type { Tables } from "../../database.types.ts"
+import { supabase } from '@/supabase/client'
+import { useState } from 'react'
+import { useAuthContext } from '@/context/AuthContext'
 
-type FocusSession = Tables<'focus_sessions'>
-
-type BestFocusTime = {
-  hour: number
-  avg_focus_level: number
-  sessions_count: number
-} | null
-
-type UseFetchFocusSessionReturn = {
-  bestFocusTime: BestFocusTime
-  allSessions: FocusSession[]
-  loading: boolean
-  error: string | null
+type FetchResult<T> = {
+  success: boolean
+  data?: T
+  error?: string
 }
 
+export const useFetchStatistics = () => {
+  const [loading, setLoading] = useState(false)
+  const [err, setError] = useState<string | null>(null)
+  const { session, authLoading } = useAuthContext()
 
+  const withLoading = async <T>(
+    fn: () => Promise<FetchResult<T>>,
+  ): Promise<FetchResult<T>> => {
+    setLoading(true)
+    setError(null)
 
-export const useFetchStatistics = (): UseFetchFocusSessionReturn => {
-
-  const [bestFocusTime, setBestFocusTime] = useState<BestFocusTime>(null)
-  const [allSessions, setAllSessions] = useState<FocusSession[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const { user } = useAuthContext()
-
-  useEffect(() => {
-    if (!user?.id) {
-      setLoading(false)
-      return
-    }
-
-    const fetchFocusData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        // Query para obtener todas las sesiones del usuario
-        const { data, error: queryError } = await supabase
-          .from('focus_sessions')
-          .select('start_date, focus_level')
-          .eq('user_id', user.id)
-          // No ordenamos, el cliente lo hace
-
-        if (queryError) {
-          throw new Error(queryError.message)
-        }
-
-        if (data.length === 0) {
-          setAllSessions([])
-          setBestFocusTime(null)
-          return
-        }
-
-        setAllSessions(data)
-
-        // Agrupar por hora del día y calcular promedio de focus_level
-        const focusByHour: Record<number, { total: number; count: number }> = {}
-
-        data.forEach((session) => {
-          const hour = new Date(session.start_date).getHours()
-          const focusLevel = session.focus_level
-
-          focusByHour[hour].total += focusLevel
-          focusByHour[hour].count += 1
-        })
-
-        // Encontrar la hora con mejor promedio de focus_level
-        let bestHour: BestFocusTime = null
-        let bestAverage = 0
-
-        Object.entries(focusByHour).forEach(([hour, data]) => {
-          const average = data.total / data.count
-          if (average > bestAverage) {
-            bestAverage = average
-            bestHour = {
-              hour: parseInt(hour),
-              avg_focus_level: Math.round(average * 100) / 100,
-              sessions_count: data.count,
-            }
-          }
-        })
-
-        setBestFocusTime(bestHour)
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Error desconocido'
-        setError(errorMessage)
-        console.error('Error fetching focus data:', err)
-      } finally {
-        setLoading(false)
+    try {
+      const result = await fn()
+      if (!result.success) {
+        setError(result.error ?? 'Unknown error')
       }
+      return result
+    } catch (caught) {
+      const message = caught instanceof Error ? caught.message : String(caught)
+      setError(message)
+      return { success: false, error: message }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Calculated by grouping by the hour and getting the hour with the highest average focus level.
+  const getBestFocusHours = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase
+        .rpc('get_hourly_avg_focus_for_current_user')
+        .limit(1)
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const getBestLocation = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase
+        .rpc('get_focus_level_and_total_hours_by_location')
+        .limit(1)
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const getAllSessionsAverage = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase.rpc('get_all_sessions_avg_by_user')
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const getAllUserSessions = async () => {
+    if (authLoading) {
+      const message = 'Authentication is still loading.'
+      setError(message)
+      return { success: false, error: message }
     }
 
-    fetchFocusData()
-  }, [user?.id])
+    if (!session?.user.id) {
+      const message = 'User is not logged in.'
+      setError(message)
+      return { success: false, error: message }
+    }
 
-  return { bestFocusTime, allSessions, loading, error }
+    return withLoading(async () => {
+      const { count, error } = await supabase
+        .from('focus_sessions')
+        .select('*', { count: 'exact', head: false })
+        .eq('user_id', session.user.id)
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data: count }
+    })
+  }
+
+  // Data for the concentration changes over time analytic
+  const concentrationChangesOverTime = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase.rpc(
+        'get_daily_focus_changes_over_time_by_user',
+      )
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const monthlyGrowthCurve = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase.rpc(
+        'get_daily_focus_level_per_month_by_user',
+      )
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const focusWindowByHourOfDay = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase.rpc(
+        'get_focus_window_by_hour_of_day',
+      )
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const performanceByLocation = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase.rpc(
+        'get_focus_level_and_total_hours_by_location',
+      )
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const get_top_focus_days = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase.rpc('get_top_focus_day')
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const performance_by_work_type = async () => {
+    return withLoading(async () => {
+      const { data, error } = await supabase.rpc('performance_by_work_type')
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true, data }
+    })
+  }
+
+  const hookReturn = {
+    getBestFocusHours,
+    getBestLocation,
+    getAllSessionsAverage,
+    getAllUserSessions,
+
+    concentrationChangesOverTime,
+    monthlyGrowthCurve,
+    focusWindowByHourOfDay,
+    performanceByLocation,
+    get_top_focus_days,
+    performance_by_work_type,
+    loading,
+    err,
+  }
+
+  return hookReturn
 }

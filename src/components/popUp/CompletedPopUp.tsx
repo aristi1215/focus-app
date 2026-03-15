@@ -27,7 +27,6 @@ export const CompletedPopUp = ({
     setPopUp(false)
     setStep(0)
     setSession({
-      date: '',
       start_date: '',
       end_date: '',
       duration: 0,
@@ -59,6 +58,7 @@ export const CompletedPopUp = ({
               <div className="flex gap-3">
                 {[...Array(totalSteps)].map((__, i) => (
                   <div
+                  key={`step-${i}`}
                     className={`w-8 h-1.5 rounded-2xl mt-6 ${step == i ? 'bg-black' : 'bg-[#E5E5E5]'}`}
                   ></div>
                 ))}

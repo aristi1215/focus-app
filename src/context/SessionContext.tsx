@@ -22,7 +22,6 @@ export const SessionContextProvider = ({
   children: React.ReactNode
 }) => {
   const [session, setSession] = useState<TablesInsert<'focus_sessions'>>({
-    date: '',
     start_date: '',
     end_date: '',
     duration: 0,

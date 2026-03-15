@@ -1,14 +1,157 @@
 import { BarChartComponent } from './charts/BarChart'
 import { AreaChart } from './charts/AreaChart'
-import { ResponsiveContainer } from 'recharts'
+import { useFetchStatistics } from '@/hooks/useFetchStatistics'
+import { useEffect, useState } from 'react'
+import { WORK_LOCATIONS } from '../data/locations.ts'
+import type { Database } from 'database.types.ts'
+
+type DailyFocusChanges =
+  Database['public']['Functions']['get_daily_focus_changes_over_time_by_user']['Returns']
+type GrowthCurveType =
+  Database['public']['Functions']['get_daily_focus_level_per_month_by_user']['Returns']
+type FocusWindowType =
+  Database['public']['Functions']['get_focus_window_by_hour_of_day']['Returns']
+type performanceByLocationType =
+  Database['public']['Functions']['get_focus_level_and_total_hours_by_location']['Returns']
 
 export const Analytics = () => {
-  const keyInsights = [
-    { name: 'Best Focus Time', data: '18.8' },
-    { name: 'Best Location', data: 'Office' },
-    { name: 'Average rating', data: '4.0' },
-    { name: 'Total sessions', data: '81' },
-  ]
+  const [keyInsights, setKeyInsights] = useState<
+    { name: string; data: number | string }[] | []
+  >([])
+
+  const [concentrationChanges, setConcentrationChange] = useState<
+    DailyFocusChanges | []
+  >()
+  const [growthCurve, setGrowthCurve] = useState<GrowthCurveType | []>([])
+  const [focusWindow, setFocusWindow] = useState<FocusWindowType | []>()
+  const [performanceByLocationDetails, setPerformanceByLocationDetails] = useState<performanceByLocationType | []>()
+  const [topFocusDaysState, setTopFocusDaysState] = useState()
+  const [performanceByWorkType, setPerformanceByWorkType] = useState()
+
+  const {
+    getBestFocusHours,
+    getBestLocation,
+    getAllSessionsAverage,
+    getAllUserSessions,
+    concentrationChangesOverTime,
+    monthlyGrowthCurve,
+    focusWindowByHourOfDay,
+    performanceByLocation,
+    get_top_focus_days,
+    performance_by_work_type,
+    loading
+  } = useFetchStatistics()
+
+  const fetchStatistics = async () => {
+    const [
+      bestHourResult,
+      bestLocationResult,
+      avgSessionsResult,
+      totalSessionsResult,
+      concentrationChangesResult,
+      growthCurveResult,
+      focusWindowResult,
+      performanceByLocationResult,
+      getTopFocusDaysResult,
+      performanceByWorkTypeResult
+    ] = await Promise.all([
+      getBestFocusHours(),
+      getBestLocation(),
+      getAllSessionsAverage(),
+      getAllUserSessions(),
+      concentrationChangesOverTime(),
+      monthlyGrowthCurve(),
+      focusWindowByHourOfDay(),
+      performanceByLocation(),
+      get_top_focus_days(),
+      performance_by_work_type()
+    ])
+
+    if (
+      !bestHourResult.success ||
+      !bestLocationResult.success ||
+      !avgSessionsResult.success ||
+      !totalSessionsResult.success ||
+      !concentrationChangesResult.success ||
+      !growthCurveResult.success || 
+      !focusWindowResult.success || 
+      !performanceByLocationResult.success || 
+      !getTopFocusDaysResult.success || 
+      !performanceByWorkTypeResult.success
+    ) {
+      console.log('An error ocurred fetching analytics')
+      return
+    }
+
+    console.log("BestLocationnnn: ",bestLocationResult.data)
+
+    const bestHour = bestHourResult.data?.[0]?.hour ?? 'N/A'
+    const bestLocation = bestLocationResult.data[0].locations ?? 'Unknown'
+    const avgFocus = avgSessionsResult.data ?? 0
+    const totalSessions = totalSessionsResult.data ?? 0
+    const concentrationOverTime = concentrationChangesResult.data
+    const growthCurveData = growthCurveResult.data
+    const focusWindowByHour = focusWindowResult.data
+    const performanceLocation = performanceByLocationResult.data
+    const topFocusDays = getTopFocusDaysResult.data
+    const getPerformanceByWorkType = performanceByWorkTypeResult.data
+
+
+
+    //  Returns array of {day: string, avg_focus: number}
+    console.log('concentration changes : ', concentrationOverTime)
+
+    console.log('Growth curve: ', growthCurveResult.data)
+
+
+    // 
+    console.log("Focus Window: ", focusWindowByHour)
+
+    //
+    console.log("Performance by location: ", performanceLocation)
+
+    //
+    console.log("Top focus days", topFocusDays)
+
+    //
+    console.log("Performance by work type: ", getPerformanceByWorkType)
+
+    //  Change this data. Make a join in the rpc function from supabase
+    const location = WORK_LOCATIONS.filter(
+      (locations) => locations.id == bestLocation,
+    )[0].name || ""
+
+    const insights = [
+      {
+        name: 'Best focus hour',
+        data: `${bestHour}:00`,
+      },
+      {
+        name: 'Best location',
+        data: location,
+      },
+      {
+        name: 'Average focus level',
+        data: Number(avgFocus).toFixed(1),
+      },
+      {
+        name: 'Total sessions',
+        data: totalSessions,
+      },
+    ]
+
+    setKeyInsights(insights)
+    setConcentrationChange(concentrationOverTime || [])
+    setGrowthCurve(growthCurveData || [])
+    setFocusWindow(focusWindowByHour || [])
+    setPerformanceByLocationDetails(performanceLocation || [])
+    setTopFocusDaysState(topFocusDays)
+    setPerformanceByWorkType(getPerformanceByWorkType)
+  }
+
+  useEffect(() => {
+    fetchStatistics()
+  }, [])
 
   const data = [
     { date: '26-02-15', score: 45 },
@@ -19,7 +162,7 @@ export const Analytics = () => {
     { date: '26-02-20', score: 70 },
   ]
 
-  const growthCurve = [
+  const growthCurve2 = [
     { day: 1, score: 23 },
     { day: 2, score: 35 },
     { day: 3, score: 45 },
@@ -95,7 +238,7 @@ export const Analytics = () => {
     { date: 'mar 20', score: 5.8 },
   ]
 
-  const performanceByWorkType = [
+  const performanceByWorkType2 = [
     { type: 'deep work', score: 85 },
     { type: 'shallow work', score: 70 },
     { type: 'meetings', score: 60 },
@@ -104,6 +247,12 @@ export const Analytics = () => {
     { type: 'learning', score: 80 },
     { type: 'research', score: 75 },
   ]
+
+    if(loading){
+    return <div>
+      <p>The informacion is loading </p>
+    </div>
+  }
 
   return (
     <div className=" font-inter p-6 md:p-6 md:mx-30">
@@ -137,11 +286,13 @@ export const Analytics = () => {
         <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">
           Concentration Changes Over Time
         </h3>
-        <AreaChart data={data} angle={-45} />
+        <AreaChart data={concentrationChanges} angle={-45} />
       </div>
 
       <div className="w-full border border-[#E5E5E5] rounded-xl p-6 shadow-sm mt-10">
-        <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">30 Days Growth Curve</h3>
+        <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">
+          30 Days Growth Curve
+        </h3>
         <AreaChart data={growthCurve} />
       </div>
 
@@ -149,17 +300,23 @@ export const Analytics = () => {
         <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">
           Focus Window by Hour of Day
         </h3>
-        <BarChartComponent data={FocusWindowByHour} />
+        <BarChartComponent data={focusWindow} />
       </div>
 
       <div className="md:flex md:justify-center w-full md:gap-8 mt-8">
         <div className="mb-8 md:mb-8 border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full">
-          <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">Location Performance</h3>
-          {locations.map((location) => (
+          <h3 className="mb-4 md:mb-10 md:text-lg font-semibold">
+            Location Performance
+          </h3>
+          {performanceByLocationDetails?.length >= 0 && performanceByLocationDetails ? performanceByLocationDetails.map((location) => {
+            const locationIndex = location.locations-1
+            return(
             <div className="mb-6" key={location.name}>
               <div className="w-full flex justify-between">
-                <h4 className="mb-4 md:text-lg font-semibold">{location.name}</h4>
-                <p className="text-gray-600">{location.score}%</p>
+                <h4 className="mb-4 md:text-lg font-semibold">
+                  {WORK_LOCATIONS[locationIndex].name || ""}
+                </h4>
+                <p className="text-gray-600">{location.avg_focus}%</p>
               </div>
               <div
                 id="progress-bar"
@@ -167,35 +324,41 @@ export const Analytics = () => {
               >
                 <div
                   className="bg-black h-2.5 rounded-full"
-                  style={{ width: `${location.score}%` }}
+                  style={{ width: `${location.avg_focus}%` }}
                 ></div>
               </div>
-              <p className="text-sm mt-3 text-gray-600">{location.hours} hours total</p>
+              <p className="text-sm mt-3 text-gray-600">
+                {location.total_hours} hours total
+              </p>
             </div>
-          ))}
+          )}) : <p>There's no information</p>}
         </div>
 
         <div className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full">
-          <h3 className="text-[15px] mb-6 md:text-lg font-semibold">Top Focus Day</h3>
-          {topFocusDays.map((day, i) => (
+          <h3 className="text-[15px] mb-6 md:text-lg font-semibold">
+            Top Focus Day
+          </h3>
+          {topFocusDaysState && topFocusDaysState.lenght != 0 ? topFocusDaysState.map((day, i) => (
             <div
               className="w-full flex items-center justify-between mb-3"
-              key={day.date}
+              key={day.day}
             >
               <div className="flex items-center">
                 <div className="bg-gray-200 rounded-full p-4 w-10 h-10 flex items-center justify-center mr-4">
                   <p className="font-semibold ">{i + 1}</p>
                 </div>
-                <p className="text-sm md:text-lg">{day.date}</p>
+                <p className="text-sm md:text-lg">{day.day}</p>
               </div>
-              <p className="font-semibold text-sm md:text-lg">{day.score} h</p>
+              <p className="font-semibold text-sm md:text-lg">{day.focus_avg} h</p>
             </div>
-          ))}
+          )): <p>There are no top focus days</p>}
         </div>
       </div>
 
       <div className="border border-[#E5E5E5] rounded-xl p-6 shadow-sm w-full mt-8">
-        <h3 className="mb-6 text-sm md:text-lg font-semibold">Performance by Work Type</h3>
+        <h3 className="mb-6 text-sm md:text-lg font-semibold">
+          Performance by Work Type
+        </h3>
         <BarChartComponent data={performanceByWorkType} />
       </div>
     </div>

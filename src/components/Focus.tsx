@@ -43,7 +43,6 @@ export const Focus = () => {
     setSession({
       ...session,
       start_date: new Date().toISOString(),
-      date: new Date().toLocaleDateString(),
       user_id: userId,
     })
   }
