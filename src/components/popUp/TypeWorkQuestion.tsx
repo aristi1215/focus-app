@@ -1,20 +1,8 @@
-import type { WorkCategories } from '@/types/tabs'
 import { useSessionContext } from '@/context/SessionContext'
+import { WORK_TYPES } from '@/data/work_types'
 
 export const TypeWorkQuestion = () => {
-  const [sessionInfo, setSessionInfo] = useSessionContext()
-
-  const categories: WorkCategories[] = [
-    'Deep Work',
-    'Creative Work',
-    'Writing',
-    'Study',
-    'Coding',
-    'Planning',
-    'Meeting',
-    'Research',
-    'Other',
-  ]
+  const { session, setSession } = useSessionContext()
   return (
     <div className="text-center">
       <div>
@@ -22,14 +10,12 @@ export const TypeWorkQuestion = () => {
         <p className="text-[#737373] mb-4 ">Select the type of work</p>
       </div>
       <div className="grid grid-cols-3 gap-3 ">
-        {categories.map((categorie) => (
+        {WORK_TYPES.map((workType) => (
           <button
-            className={`p-4 border border-[#737373]/50 hover:bg-black hover:text-white transition-all duration-300 cursor-pointer text-xs sm:text-sm rounded-xl ${sessionInfo.typeOfWork === categorie ? "bg-black text-white" : ""}`}
-            onClick={() =>
-              setSessionInfo({ ...sessionInfo, typeOfWork: categorie })
-            }
+            className={`p-4 border border-[#737373]/50 hover:bg-black hover:text-white transition-all duration-300 cursor-pointer text-xs sm:text-sm rounded-xl ${session.work_type === workType.id ? 'bg-black text-white' : ''}`}
+            onClick={() => setSession({ ...session, work_type: workType.id })}
           >
-            {categorie}
+            {workType.work_type}
           </button>
         ))}
       </div>

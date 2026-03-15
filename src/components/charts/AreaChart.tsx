@@ -9,6 +9,8 @@ import {
 
 export const AreaChart = ({data, angle}: {data: {}[], angle?: number}) => {
 
+   if (!data || data.length === 0) return null
+
   return (
     <LineChart
       style={{
